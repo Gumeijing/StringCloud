@@ -1,0 +1,93 @@
+spring:
+  profiles:
+    active: dev # 激活开发环境配置
+---
+server:
+  port: 9999
+
+
+#DB Configuration:
+spring:
+  profiles: dev # 开发环境
+  application:
+    name: zuul_service #这个很重要，这在以后的服务与服务之间相互调用一般都是根据这个name
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/springcloud_jingdong?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+
+mybatis:
+  type-aliases-package: com.wanshi.po
+  mapper-locations: classpath:mapper/*Mapper.xml
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:6868/eureka/
+  instance:
+    prefer-ip-address: true
+
+zuul:
+  routes:
+    order-service: #微服务名称
+      path: /order_path/** #配置请求URL的请求规则
+    product-service: #微服务名称
+      path: /prod_path/** #配置请求URL的请求规则
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeout-in-milliseconds: 6000 # 熔断超时时长：6000ms
+ribbon:
+  ReadTimeout: 30000 # 通信超时时间(ms)
+  ConnectTimeout: 15000 # 连接超时时间(ms)
+---
+server:
+  port: 9004
+
+
+#DB Configuration:
+spring:
+  profiles: prod # 生产环境
+  application:
+    name: product-service #这个很重要，这在以后的服务与服务之间相互调用一般都是根据这个name
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/springcloud_jingdong2?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+
+mybatis:
+  type-aliases-package: com.wanshi.po
+  mapper-locations: classpath:mapper/*Mapper.xml
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:6868/eureka/
+  instance:
+    prefer-ip-address: true
+
+zuul:
+  routes:
+    order-service: #微服务名称
+      path: /order_path/** #配置请求URL的请求规则
+    product-service: #微服务名称
+      path: /prod_path/** #配置请求URL的请求规则
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeout-in-milliseconds: 6000 # 熔断超时时长：6000ms
+ribbon:
+  ReadTimeout: 30000 # 通信超时时间(ms)
+  ConnectTimeout: 15000 # 连接超时时间(ms)
